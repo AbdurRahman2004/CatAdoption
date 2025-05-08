@@ -1,4 +1,4 @@
-const Pet = require('../Model/PetModel');
+const db = require('../config/db.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -7,17 +7,11 @@ const postPetRequest = async (req, res) => {
     const { name, age, area, justification, email, phone, type } = req.body;
     const { filename } = req.file;
 
-    const pet = await Pet.create({
-      name,
-      age,
-      area,
-      justification,
-      email,
-      phone,
-      type,
-      filename,
-      status: 'Pending'
-    });
+    const pet = await db.one(
+      `INSERT INTO pets (name, age, area, justification, email, phone, type, filename, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'Pending') RETURNING *`,
+      [name, age, area, justification, email, phone, type, filename]
+    );
 
     res.status(200).json(pet);
   } catch (error) {
@@ -29,11 +23,13 @@ const approveRequest = async (req, res) => {
   try {
     const id = req.params.id;
     const { email, phone, status } = req.body;
-    const pet = await Pet.findByIdAndUpdate(id, { email, phone, status }, { new: true });
 
-    if (!pet) {
-      return res.status(404).json({ error: 'Pet not found' });
-    }
+    const pet = await db.oneOrNone(
+      `UPDATE pets SET email=$1, phone=$2, status=$3, updated_at=NOW() WHERE id=$4 RETURNING *`,
+      [email, phone, status, id]
+    );
+
+    if (!pet) return res.status(404).json({ error: 'Pet not found' });
 
     res.status(200).json(pet);
   } catch (err) {
@@ -41,11 +37,14 @@ const approveRequest = async (req, res) => {
   }
 };
 
-const allPets = async (reqStatus, req, res) => {
+const allPets = async (status, req, res) => {
   try {
-    const data = await Pet.find({ status: reqStatus }).sort({ updatedAt: -1 });
-    if (data.length > 0) {
-      res.status(200).json(data);
+    const pets = await db.any(
+      `SELECT * FROM pets WHERE status = $1 ORDER BY updated_at DESC`,
+      [status]
+    );
+    if (pets.length > 0) {
+      res.status(200).json(pets);
     } else {
       res.status(404).json({ error: 'No data found' });
     }
@@ -57,24 +56,17 @@ const allPets = async (reqStatus, req, res) => {
 const deletePost = async (req, res) => {
   try {
     const id = req.params.id;
-    const pet = await Pet.findByIdAndDelete(id);
-    if (!pet) {
-      return res.status(404).json({ error: 'Pet not found' });
-    }
-    const filePath = path.join(__dirname, '../images', pet.filename);
+    const pet = await db.oneOrNone(`DELETE FROM pets WHERE id = $1 RETURNING filename`, [id]);
 
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
+    if (!pet) return res.status(404).json({ error: 'Pet not found' });
+
+    const filePath = path.join(__dirname, '../images', pet.filename);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
     res.status(200).json({ message: 'Pet deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-module.exports = {
-  postPetRequest,
-  approveRequest,
-  deletePost,
-  allPets
-};
+module.exports = { postPetRequest, approveRequest, deletePost, allPets };

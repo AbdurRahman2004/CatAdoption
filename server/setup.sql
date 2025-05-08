@@ -1,0 +1,26 @@
+CREATE TABLE pets (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age VARCHAR(50) NOT NULL,
+    area VARCHAR(100) NOT NULL,
+    justification TEXT NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    filename VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE adopt_forms (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) NOT NULL,
+    phone_no VARCHAR(20) NOT NULL,
+    living_situation TEXT NOT NULL,
+    previous_experience TEXT NOT NULL,
+    family_composition TEXT NOT NULL,
+    pet_id INTEGER NOT NULL REFERENCES pets(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
