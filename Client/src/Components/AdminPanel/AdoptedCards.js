@@ -15,7 +15,7 @@ const AdoptedCards = (props) => {
  const handleReject = async () => {
     setIsDeleting(true)
     try {
-      const response = await fetch(`http://localhost:4000/delete/${props.pet._id}`, {
+      const response = await fetch(`http://localhost:4000/delete/${props.pet.id}`, {
         method: 'DELETE'
       })
 

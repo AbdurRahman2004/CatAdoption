@@ -52,7 +52,7 @@ function AdoptForm(props) {
           livingSituation,
           previousExperience,
           familyComposition,
-          petId: props.pet._id
+          petId: props.pet.id
         })
       })
 

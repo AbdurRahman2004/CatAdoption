@@ -32,7 +32,7 @@ const AdoptedHistory = () => {
       requests.length > 0 ? (
         requests.map((request) => (
           <AdoptedCards
-            key={request._id}
+            key={request.id}
             pet={request}
             updateCards={fetchAdoptedPets}
             deleteBtnText="Delete History"

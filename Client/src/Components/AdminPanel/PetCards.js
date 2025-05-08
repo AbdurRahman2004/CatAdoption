@@ -10,35 +10,33 @@ const PetCards = (props) => {
   const [isApproving, setIsApproving] = useState(false);
 
   const truncateText = (text, maxLength) => {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.substring(0, maxLength) + '...';
+    if (!text) return '';
+    return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
   };
 
   const maxLength = 40;
 
   const formatTimeAgo = (updatedAt) => {
+    if (!updatedAt) return 'Unknown time';
     const date = new Date(updatedAt);
+    if (isNaN(date.getTime())) return 'Invalid date';
     return formatDistanceToNow(date, { addSuffix: true });
   };
 
   const handleApprove = async () => {
     setIsApproving(true);
     try {
-      const response = await fetch(`http://localhost:4000/approving/${props.pet._id}`, {
+      console.log(props.pet.id);
+      const response = await fetch(`http://localhost:4000/approving/${props.pet.id}`, {
         method: 'PUT',
-        body: JSON.stringify({
-          status: "Approved"
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-
+        body: JSON.stringify({ status: "Approved" }),
+        headers: { 'Content-Type': 'application/json' }
+      });
       if (!response.ok) {
+        console.log(response);
         setShowErrorPopup(true);
       } else {
+        console.log(response);
         setShowApproved(true);
       }
     } catch (err) {
@@ -46,29 +44,27 @@ const PetCards = (props) => {
     } finally {
       setIsApproving(false);
     }
-  }
+  };
 
   const deleteFormsAdoptedPet = async () => {
-    setIsDeleting(true)
+    setIsDeleting(true);
     try {
-      const deleteResponses = await fetch(`http://localhost:4000/form/delete/many/${props.pet._id}`, {
+      const deleteResponses = await fetch(`http://localhost:4000/form/delete/many/${props.pet.id}`, {
         method: 'DELETE'
       });
-      if (!deleteResponses.ok) {
-        throw new Error('Failed to delete forms');
-      }
+      if (!deleteResponses.ok) throw new Error('Failed to delete forms');
     } catch (err) {
-    }finally{
+      // handle error if needed
+    } finally {
       handleReject();
     }
-  }
+  };
 
   const handleReject = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/delete/${props.pet._id}`, {
+      const response = await fetch(`http://localhost:4000/delete/${props.pet.id}`, {
         method: 'DELETE'
-      })
-
+      });
       if (!response.ok) {
         setShowErrorPopup(true);
         throw new Error('Failed to delete pet');
@@ -81,7 +77,7 @@ const PetCards = (props) => {
     } finally {
       setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <div className='req-containter'>
@@ -100,7 +96,7 @@ const PetCards = (props) => {
             <b>Justification:</b>
             <span>
               {truncateText(props.pet.justification, maxLength)}
-              {props.pet.justification.length > maxLength && (
+              {props.pet.justification?.length > maxLength && (
                 <span onClick={() => setShowJustificationPopup(!showJustificationPopup)} className='read-more-btn'>
                   Read More
                 </span>
@@ -110,33 +106,39 @@ const PetCards = (props) => {
           <p>{formatTimeAgo(props.pet.updatedAt)}</p>
         </div>
         <div className='app-rej-btn'>
-          <button onClick={deleteFormsAdoptedPet} disabled={isDeleting || isApproving}>{isDeleting ? (<p>Deleting</p>) : (props.deleteBtnText)}</button>
-          {props.approveBtn ?
-            <button disabled={isDeleting || isApproving} onClick={handleApprove}>{isApproving ? (<p>Approving</p>) : 'Approve'}</button>
-            : ''
-          }
+          <button onClick={deleteFormsAdoptedPet} disabled={isDeleting || isApproving}>
+            {isDeleting ? 'Deleting...' : props.deleteBtnText}
+          </button>
+          {props.approveBtn && (
+            <button disabled={isDeleting || isApproving} onClick={handleApprove}>
+              {isApproving ? 'Approving...' : 'Approve'}
+            </button>
+          )}
         </div>
+
         {showJustificationPopup && (
           <div className='popup'>
             <div className='popup-content'>
               <h4>Justification:</h4>
               <p>{props.pet.justification}</p>
             </div>
-            <button onClick={() => setShowJustificationPopup(!showJustificationPopup)} className='close-btn'>
+            <button onClick={() => setShowJustificationPopup(false)} className='close-btn'>
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
+
         {showErrorPopup && (
           <div className='popup'>
             <div className='popup-content'>
               <p>Oops!... Connection Error</p>
             </div>
-            <button onClick={() => setShowErrorPopup(!showErrorPopup)} className='close-btn'>
+            <button onClick={() => setShowErrorPopup(false)} className='close-btn'>
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
+
         {showApproved && (
           <div className='popup'>
             <div className='popup-content'>
@@ -146,12 +148,12 @@ const PetCards = (props) => {
                 <a href={`mailto:${props.pet.email}`}>{props.pet.email}</a>{' '}
                 or{' '}
                 <a href={`tel:${props.pet.phone}`}>{props.pet.phone}</a>{' '}
-                to arrange the transfer of the pet from the owner's home to our adoption center.
+                to arrange the transfer of the pet.
               </p>
             </div>
             <button onClick={() => {
-              setShowApproved(!showApproved)
-              props.updateCards()
+              setShowApproved(false);
+              props.updateCards();
             }} className='close-btn'>
               Close <i className="fa fa-times"></i>
             </button>
@@ -164,14 +166,13 @@ const PetCards = (props) => {
               <p>Deleted Successfully from Database...</p>
             </div>
             <button onClick={() => {
-              setshowDeletedSuccess(!showDeletedSuccess)
-              props.updateCards()
+              setshowDeletedSuccess(false);
+              props.updateCards();
             }} className='close-btn'>
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
-
       </div>
     </div>
   );

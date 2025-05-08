@@ -22,27 +22,30 @@ const postPetRequest = async (req, res) => {
 const approveRequest = async (req, res) => {
   try {
     const id = req.params.id;
-    const { email, phone, status } = req.body;
+    const { status } = req.body;
 
     const pet = await db.oneOrNone(
-      `UPDATE pets SET email=$1, phone=$2, status=$3, updated_at=NOW() WHERE id=$4 RETURNING *`,
-      [email, phone, status, id]
+      `UPDATE pets SET status=$1, updated_at=NOW() WHERE id=$2 RETURNING *`,
+      [status, id]
     );
 
     if (!pet) return res.status(404).json({ error: 'Pet not found' });
 
     res.status(200).json(pet);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
 
+// ✅ Accepts status as first parameter (used by router)
 const allPets = async (status, req, res) => {
   try {
     const pets = await db.any(
       `SELECT * FROM pets WHERE status = $1 ORDER BY updated_at DESC`,
       [status]
     );
+
     if (pets.length > 0) {
       res.status(200).json(pets);
     } else {

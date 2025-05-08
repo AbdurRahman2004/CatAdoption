@@ -7,18 +7,20 @@ const PostingPets = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('http://localhost:4000/requests')
+      const response = await fetch('http://localhost:4000/requests');
       if (!response.ok) {
-        throw new Error('An error occurred')
+        console.error('Failed to fetch:', response.status, response.statusText);
+        throw new Error('An error occurred');
       }
-      const data = await response.json()
-      setRequests(data)
+      const data = await response.json();
+      setRequests(data);
     } catch (error) {
-      console.log(error)
+      console.error('Error in fetch:', error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+  
 
   useEffect(() => {
 
@@ -32,7 +34,7 @@ const PostingPets = () => {
       ) : (
         requests.length > 0 ? (
           requests.map((request, index) => (
-            <PetCards key={request._id} pet={request} updateCards={fetchRequests} deleteBtnText={"Reject"} approveBtn={true}/>
+            <PetCards key={request.id} pet={request} updateCards={fetchRequests} deleteBtnText={"Reject"} approveBtn={true}/>
           ))
         ) : (
           <p>No requests available</p>
