@@ -43,7 +43,7 @@ const AdoptingRequests = () => {
   }, []);
 
   const petsWithRequests = pets.filter((pet) =>
-    forms.some((form) => form.petId === pet._id)
+    forms.some((form) => form.petId === pet.id)
   );
 
   const displayPetDetails = (pet) => {
@@ -61,7 +61,7 @@ const AdoptingRequests = () => {
   };
 
   const filteredPets = selectedPetId
-    ? petsWithRequests.filter(pet => pet._id === selectedPetId)
+    ? petsWithRequests.filter(pet => pet.id === selectedPetId)
     : petsWithRequests;
 
   return (
@@ -70,7 +70,7 @@ const AdoptingRequests = () => {
         <select className='req-filter-selection' onChange={handlePetChange} value={selectedPetId}>
           <option value="">All Requets</option>
           {petsWithRequests.map((pet) => (
-            <option key={pet._id} value={pet._id}>
+            <option key={pet._id} value={pet.id}>
               {pet.name}
             </option>
           ))}
@@ -80,7 +80,7 @@ const AdoptingRequests = () => {
         <p>Loading...</p>
       ) : filteredPets.length > 0 ? (
         filteredPets.map((pet) => {
-          const petForms = forms.filter((form) => form.petId === pet._id);
+          const petForms = forms.filter((form) => form.petId === pet.id);
           return (
             <div key={pet._id} className='form-container'>
               <div>

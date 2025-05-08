@@ -11,6 +11,12 @@ const PetsViewer = (props) => {
 
   const formatTimeAgo = (updatedAt) => {
     const date = new Date(updatedAt);
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+
     return formatDistanceToNow(date, { addSuffix: true });
   };
 
