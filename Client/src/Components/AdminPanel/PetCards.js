@@ -27,7 +27,7 @@ const PetCards = (props) => {
     setIsApproving(true);
     try {
       console.log(props.pet.id);
-      const response = await fetch(`http://localhost:4000/approving/${props.pet.id}`, {
+      const response = await fetch(`http://localhost:4000/pets/approving/${props.pet.id}`, {
         method: 'PUT',
         body: JSON.stringify({ status: "Approved" }),
         headers: { 'Content-Type': 'application/json' }
@@ -62,7 +62,7 @@ const PetCards = (props) => {
 
   const handleReject = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/delete/${props.pet.id}`, {
+      const response = await fetch(`http://localhost:4000/pets/delete/${props.pet.id}`, {
         method: 'DELETE'
       });
       if (!response.ok) {

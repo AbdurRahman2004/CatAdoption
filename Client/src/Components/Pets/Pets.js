@@ -9,7 +9,7 @@ const Pets = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const response = await fetch('http://localhost:4000/approvedPets')
+        const response = await fetch('http://localhost:4000/pets/approvedPets')
         if (!response.ok) {
           throw new Error('An error occurred')
         }
