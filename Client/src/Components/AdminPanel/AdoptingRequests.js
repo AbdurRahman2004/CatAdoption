@@ -12,11 +12,10 @@ const AdoptingRequests = () => {
   const fetchForms = async () => {
     try {
       const response = await fetch('http://localhost:4000/form/getForms');
-      if (!response.ok) {
-        throw new Error('An error occurred');
-      }
+      console.log('Raw response:', response);
       const data = await response.json();
-      setForms(data);
+      console.log('Fetched forms:', data);
+      setForms(data); // This will update the state
     } catch (error) {
       console.log(error);
     } finally {
@@ -26,7 +25,7 @@ const AdoptingRequests = () => {
 
   const fetchPets = async () => {
     try {
-      const response = await fetch('http://localhost:4000/approvedPets');
+      const response = await fetch('http://localhost:4000/pets/approvedPets');
       if (!response.ok) {
         throw new Error('An error occurred');
       }
@@ -42,8 +41,12 @@ const AdoptingRequests = () => {
     fetchPets();
   }, []);
 
+  useEffect(() => {
+    console.log('Forms state updated:', forms);
+  }, [forms]); 
+
   const petsWithRequests = pets.filter((pet) =>
-    forms.some((form) => form.petId === pet.id)
+    forms.some((form) => form.pet_id === pet.id)
   );
 
   const displayPetDetails = (pet) => {
@@ -70,7 +73,7 @@ const AdoptingRequests = () => {
         <select className='req-filter-selection' onChange={handlePetChange} value={selectedPetId}>
           <option value="">All Requets</option>
           {petsWithRequests.map((pet) => (
-            <option key={pet._id} value={pet.id}>
+            <option key={pet.id} value={pet.id}>
               {pet.name}
             </option>
           ))}
@@ -80,9 +83,9 @@ const AdoptingRequests = () => {
         <p>Loading...</p>
       ) : filteredPets.length > 0 ? (
         filteredPets.map((pet) => {
-          const petForms = forms.filter((form) => form.petId === pet.id);
+          const petForms = forms.filter((form) => form.pet_id === pet.id);
           return (
-            <div key={pet._id} className='form-container'>
+            <div key={pet.id} className='form-container'>
               <div>
                 <h2 className='clickable-pet-name' onClick={() => displayPetDetails(pet)}>
                   {pet.name}
@@ -91,7 +94,7 @@ const AdoptingRequests = () => {
               <div className='form-child-container'>
                 {petForms.map((form) => (
                   <FormCard
-                    key={form._id}
+                    key={form.id}
                     form={form}
                     pet={pet}
                     updateCards={fetchForms}

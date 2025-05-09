@@ -16,7 +16,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(petRouter);
+app.use('/pets', petRouter)
 app.use('/form', AdoptFormRoute);
 app.use('/admin', AdminRoute);
 

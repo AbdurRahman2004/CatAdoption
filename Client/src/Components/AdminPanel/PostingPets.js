@@ -7,7 +7,8 @@ const PostingPets = () => {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('http://localhost:4000/requests');
+      const response = await fetch('http://localhost:4000/pets/requests');
+      console.log('Raw response:', response);
       if (!response.ok) {
         console.error('Failed to fetch:', response.status, response.statusText);
         throw new Error('An error occurred');

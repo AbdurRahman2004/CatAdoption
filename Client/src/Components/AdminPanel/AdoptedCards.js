@@ -7,17 +7,20 @@ const AdoptedCards = (props) => {
   const [showDeletedSuccess, setshowDeletedSuccess] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Ensure props.pet exists before using it
+  const pet = props.pet || {};
+
   const formatTimeAgo = (updatedAt) => {
     const date = new Date(updatedAt);
     return formatDistanceToNow(date, { addSuffix: true });
   };
 
- const handleReject = async () => {
-    setIsDeleting(true)
+  const handleReject = async () => {
+    setIsDeleting(true);
     try {
-      const response = await fetch(`http://localhost:4000/delete/${props.pet.id}`, {
-        method: 'DELETE'
-      })
+      const response = await fetch(`http://localhost:4000/pets/delete/${pet.id}`, {
+        method: 'DELETE',
+      });
 
       if (!response.ok) {
         setShowErrorPopup(true);
@@ -31,70 +34,84 @@ const AdoptedCards = (props) => {
     } finally {
       setIsDeleting(false);
     }
-  }
+  };
 
   return (
-    <div className='req-containter'>
-      <div className='pet-view-card'>
-        <div className='pet-card-pic'>
-          <img src={`http://localhost:4000/images/${props.pet.filename}`} alt={props.pet.name} />
+    <div className="req-containter">
+      <div className="pet-view-card">
+        <div className="pet-card-pic">
+          {/* Ensure pet.filename exists before using it */}
+          {pet.filename ? (
+            <img src={`http://localhost:4000/images/${pet.filename}`} alt={pet.name} />
+          ) : (
+            <div>No Image Available</div>
+          )}
         </div>
-        <div className='pet-card-details'>
-          <h2>{props.pet.name}</h2>
-          <p><b>Type:</b> {props.pet.type}</p>
-          <p><b>New Owner Email:</b> {props.pet.email}</p>
-          <p><b>New Owner Phone:</b> {props.pet.phone}</p>
-          <p><b>Adopted: </b>{formatTimeAgo(props.pet.updatedAt)}</p>
+        <div className="pet-card-details">
+          <h2>{pet.name}</h2>
+          <p><b>Type:</b> {pet.type}</p>
+          <p><b>New Owner Email:</b> {pet.email}</p>
+          <p><b>New Owner Phone:</b> {pet.phone}</p>
+          <p><b>Adopted: </b>{pet.updatedAt ? formatTimeAgo(pet.updatedAt) : 'Not Available'}</p>
         </div>
-        <div className='app-rej-btn'>
-          <button onClick={handleReject} disabled={isDeleting}>{isDeleting ? (<p>Deleting</p>) : (props.deleteBtnText)}</button>
-
+        <div className="app-rej-btn">
+          <button onClick={handleReject} disabled={isDeleting}>
+            {isDeleting ? 'Deleting...' : props.deleteBtnText || 'Delete'}
+          </button>
         </div>
+        
+        {/* Show error popup if delete fails */}
         {showErrorPopup && (
-          <div className='popup'>
-            <div className='popup-content'>
-              <p>Oops!... Connection Error</p>
+          <div className="popup">
+            <div className="popup-content">
+              <p>Oops! Connection Error</p>
             </div>
-            <button onClick={() => setShowErrorPopup(!showErrorPopup)} className='close-btn'>
+            <button onClick={() => setShowErrorPopup(false)} className="close-btn">
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
+
+        {/* Show success popup after approval */}
         {showApproved && (
-          <div className='popup'>
-            <div className='popup-content'>
+          <div className="popup">
+            <div className="popup-content">
               <p>Approval Successful...</p>
               <p>
                 Please contact the customer at{' '}
-                <a href={`mailto:${props.pet.email}`}>{props.pet.email}</a>{' '}
-                or{' '}
-                <a href={`tel:${props.pet.phone}`}>{props.pet.phone}</a>{' '}
-                to arrange the transfer of the pet from the owner's home to our adoption center.
+                <a href={`mailto:${pet.email}`}>{pet.email}</a> or{' '}
+                <a href={`tel:${pet.phone}`}>{pet.phone}</a> to arrange the transfer of the pet.
               </p>
             </div>
-            <button onClick={() => {
-              setShowApproved(!showApproved)
-              props.updateCards()
-            }} className='close-btn'>
+            <button
+              onClick={() => {
+                setShowApproved(false);
+                props.updateCards(); // Assuming this updates the list of cards
+              }}
+              className="close-btn"
+            >
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
 
+        {/* Show success popup after deletion */}
         {showDeletedSuccess && (
-          <div className='popup'>
-            <div className='popup-content'>
+          <div className="popup">
+            <div className="popup-content">
               <p>Deleted Successfully from Database...</p>
             </div>
-            <button onClick={() => {
-              setshowDeletedSuccess(!showDeletedSuccess)
-              props.updateCards()
-            }} className='close-btn'>
+            <button
+              onClick={() => {
+                setshowDeletedSuccess(false);
+                props.updateCards(); // Assuming this updates the list of cards
+              }}
+              className="close-btn"
+            >
               Close <i className="fa fa-times"></i>
             </button>
           </div>
         )}
-
       </div>
     </div>
   );
