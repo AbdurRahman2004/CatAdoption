@@ -132,3 +132,154 @@
   max-width: 80vw;
   min-width: 80vw;
 }
+
+/* General Styles */
+.req-containter {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.pet-view-card {
+  width: 80%;
+  max-width: 600px;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.pet-card-pic img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.pet-card-details h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.pet-card-details p {
+  font-size: 14px;
+  color: #555;
+  margin: 5px 0;
+}
+
+.app-rej-btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.app-rej-btn button {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.app-rej-btn button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.app-rej-btn button:hover {
+  background-color: #0056b3;
+}
+
+/* Popup Styles */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  max-width: 100%;
+  position: relative;
+}
+
+.popup h4 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.popup p {
+  font-size: 14px;
+  color: #555;
+}
+
+.popup input,
+.popup textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.popup button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.popup button[type="submit"]:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.popup .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.popup .close-btn i {
+  color: #999;
+}
+
+.popup .close-btn:hover i {
+  color: #333;
+}
+
+/* Additional Popup Styling */
+.popup-content a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.popup-content a:hover {
+  text-decoration: underline;
+}
