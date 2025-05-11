@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
+import './Admin.css';
 
 const PetCards = (props) => {
   const [showJustificationPopup, setShowJustificationPopup] = useState(false);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [showApproved, setShowApproved] = useState(false);
-  const [showDeletedSuccess, setshowDeletedSuccess] = useState(false);
+  const [showDeletedSuccess, setShowDeletedSuccess] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updatedPet, setUpdatedPet] = useState({ ...props.pet });
 
   const truncateText = (text, maxLength) => {
     if (!text) return '';
@@ -69,13 +72,42 @@ const PetCards = (props) => {
         setShowErrorPopup(true);
         throw new Error('Failed to delete pet');
       } else {
-        setshowDeletedSuccess(true);
+        setShowDeletedSuccess(true);
       }
     } catch (err) {
       setShowErrorPopup(true);
       console.error('Error deleting pet:', err);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleUpdateChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedPet((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    try {
+      const response = await fetch(`http://localhost:4000/pets/update/${props.pet.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updatedPet),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) {
+        setShowErrorPopup(true);
+      } else {
+        setUpdatedPet({ ...updatedPet });
+        setIsUpdating(false);
+        setShowJustificationPopup(false);
+      }
+    } catch (err) {
+      setShowErrorPopup(true);
     }
   };
 
@@ -114,13 +146,70 @@ const PetCards = (props) => {
               {isApproving ? 'Approving...' : 'Approve'}
             </button>
           )}
+          <button onClick={() => setShowJustificationPopup(true)} disabled={isDeleting || isApproving || isUpdating}>
+            Update
+          </button>
         </div>
 
+        {/* Justification Popup */}
         {showJustificationPopup && (
           <div className='popup'>
             <div className='popup-content'>
               <h4>Justification:</h4>
               <p>{props.pet.justification}</p>
+              <form onSubmit={handleUpdateSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  value={updatedPet.name}
+                  onChange={handleUpdateChange}
+                  placeholder="Pet Name"
+                />
+                <input
+                  type="text"
+                  name="type"
+                  value={updatedPet.type}
+                  onChange={handleUpdateChange}
+                  placeholder="Pet Type"
+                />
+                <input
+                  type="number"
+                  name="age"
+                  value={updatedPet.age}
+                  onChange={handleUpdateChange}
+                  placeholder="Age"
+                />
+                <input
+                  type="text"
+                  name="area"
+                  value={updatedPet.area}
+                  onChange={handleUpdateChange}
+                  placeholder="Location"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={updatedPet.email}
+                  onChange={handleUpdateChange}
+                  placeholder="Owner Email"
+                />
+                <input
+                  type="tel"
+                  name="phone"
+                  value={updatedPet.phone}
+                  onChange={handleUpdateChange}
+                  placeholder="Owner Phone"
+                />
+                <textarea
+                  name="justification"
+                  value={updatedPet.justification}
+                  onChange={handleUpdateChange}
+                  placeholder="Justification"
+                />
+                <button type="submit" disabled={isUpdating}>
+                  {isUpdating ? 'Updating...' : 'Update'}
+                </button>
+              </form>
             </div>
             <button onClick={() => setShowJustificationPopup(false)} className='close-btn'>
               Close <i className="fa fa-times"></i>
@@ -128,6 +217,7 @@ const PetCards = (props) => {
           </div>
         )}
 
+        {/* Error Popup */}
         {showErrorPopup && (
           <div className='popup'>
             <div className='popup-content'>
@@ -139,6 +229,7 @@ const PetCards = (props) => {
           </div>
         )}
 
+        {/* Approved Popup */}
         {showApproved && (
           <div className='popup'>
             <div className='popup-content'>
@@ -160,13 +251,14 @@ const PetCards = (props) => {
           </div>
         )}
 
+        {/* Deleted Success Popup */}
         {showDeletedSuccess && (
           <div className='popup'>
             <div className='popup-content'>
               <p>Deleted Successfully from Database...</p>
             </div>
             <button onClick={() => {
-              setshowDeletedSuccess(false);
+              setShowDeletedSuccess(false);
               props.updateCards();
             }} className='close-btn'>
               Close <i className="fa fa-times"></i>

@@ -56,6 +56,43 @@ const allPets = async (status, req, res) => {
   }
 };
 
+const updatePet = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name, age, area, justification, email, phone, type } = req.body;
+    const filename = req.file ? req.file.filename : undefined;
+
+    const pet = await db.oneOrNone(
+      'SELECT * FROM pets WHERE id = $1',
+      [id]
+    );
+
+    if (!pet) return res.status(404).json({ error: 'Pet not found' });
+
+    // If a new image is uploaded, delete the old image from the server
+    if (filename) {
+      const oldFilePath = path.join(__dirname, '../images', pet.filename);
+      if (fs.existsSync(oldFilePath)) {
+        fs.unlinkSync(oldFilePath);
+      }
+    }
+
+    const updatedPet = await db.one(
+      `UPDATE pets
+       SET name = $1, age = $2, area = $3, justification = $4, email = $5, phone = $6, type = $7, filename = $8, updated_at = NOW()
+       WHERE id = $9
+       RETURNING *`,
+      [name, age, area, justification, email, phone, type, filename || pet.filename, id]
+    );
+
+    res.status(200).json(updatedPet);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 const deletePost = async (req, res) => {
   try {
     const id = req.params.id;
@@ -72,4 +109,4 @@ const deletePost = async (req, res) => {
   }
 };
 
-module.exports = { postPetRequest, approveRequest, deletePost, allPets };
+module.exports = { postPetRequest, approveRequest, deletePost, allPets , updatePet };
