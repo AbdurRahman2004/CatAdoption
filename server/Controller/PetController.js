@@ -1,11 +1,24 @@
 const db = require('../config/db.js');
 const fs = require('fs');
 const path = require('path');
+const cloudinary = require("cloudinary").v2;
+
 
 const postPetRequest = async (req, res) => {
   try {
     const { name, age, area, justification, email, phone, type } = req.body;
-    const { filename } = req.file;
+
+    if(!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    // Upload single file to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      resource_type: "image",
+    });
+
+    // You now have the secure URL
+    const filename = result.secure_url;
 
     const pet = await db.one(
       `INSERT INTO pets (name, age, area, justification, email, phone, type, filename, status)
@@ -70,12 +83,7 @@ const updatePet = async (req, res) => {
     if (!pet) return res.status(404).json({ error: 'Pet not found' });
 
     // If a new image is uploaded, delete the old image from the server
-    if (filename) {
-      const oldFilePath = path.join(__dirname, '../images', pet.filename);
-      if (fs.existsSync(oldFilePath)) {
-        fs.unlinkSync(oldFilePath);
-      }
-    }
+    
 
     const updatedPet = await db.one(
       `UPDATE pets
@@ -96,12 +104,9 @@ const updatePet = async (req, res) => {
 const deletePost = async (req, res) => {
   try {
     const id = req.params.id;
-    const pet = await db.oneOrNone(`DELETE FROM pets WHERE id = $1 RETURNING filename`, [id]);
+    const pet = await db.oneOrNone(`DELETE FROM pets WHERE id = $1 RETURNING *`, [id]);
 
     if (!pet) return res.status(404).json({ error: 'Pet not found' });
-
-    const filePath = path.join(__dirname, '../images', pet.filename);
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
     res.status(200).json({ message: 'Pet deleted successfully' });
   } catch (err) {
@@ -109,4 +114,4 @@ const deletePost = async (req, res) => {
   }
 };
 
-module.exports = { postPetRequest, approveRequest, deletePost, allPets , updatePet };
+module.exports = { postPetRequest, approveRequest, deletePost, allPets, updatePet };

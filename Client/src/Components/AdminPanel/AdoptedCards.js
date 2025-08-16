@@ -42,7 +42,7 @@ const AdoptedCards = (props) => {
         <div className="pet-card-pic">
           {/* Ensure pet.filename exists before using it */}
           {pet.filename ? (
-            <img src={`http://localhost:4000/images/${pet.filename}`} alt={pet.name} />
+            <img src={`${pet.filename}`} alt={pet.name} />
           ) : (
             <div>No Image Available</div>
           )}
@@ -52,7 +52,7 @@ const AdoptedCards = (props) => {
           <p><b>Type:</b> {pet.type}</p>
           <p><b>New Owner Email:</b> {pet.email}</p>
           <p><b>New Owner Phone:</b> {pet.phone}</p>
-          <p><b>Adopted: </b>{pet.updatedAt ? formatTimeAgo(pet.updatedAt) : 'Not Available'}</p>
+          <p><b>Adopted: </b>{pet.updated_at ? formatTimeAgo(pet.updated_at) : 'Not Available'}</p>
         </div>
         <div className="app-rej-btn">
           <button onClick={handleReject} disabled={isDeleting}>

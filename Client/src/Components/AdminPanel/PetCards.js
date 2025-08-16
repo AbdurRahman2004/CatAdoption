@@ -115,7 +115,7 @@ const PetCards = (props) => {
     <div className='req-containter'>
       <div className='pet-view-card'>
         <div className='pet-card-pic'>
-          <img src={`http://localhost:4000/images/${props.pet.filename}`} alt={props.pet.name} />
+          <img src={`${props.pet.filename}`} alt={props.pet.name} />
         </div>
         <div className='pet-card-details'>
           <h2>{props.pet.name}</h2>
@@ -135,7 +135,7 @@ const PetCards = (props) => {
               )}
             </span>
           </p>
-          <p>{formatTimeAgo(props.pet.updatedAt)}</p>
+          <p>{formatTimeAgo(props.pet.updated_at)}</p>
         </div>
         <div className='app-rej-btn'>
           <button onClick={deleteFormsAdoptedPet} disabled={isDeleting || isApproving}>

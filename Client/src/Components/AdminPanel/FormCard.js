@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 
 const FormCard = (props) => {
+  console.log(props);
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [showApproved, setShowApproved] = useState(false);
   const [showDeletedSuccess, setShowDeletedSuccess] = useState(false);
@@ -92,18 +93,18 @@ const FormCard = (props) => {
             <b>Email: </b> {props.form.email}
           </p>
           <p>
-            <b>Phone Number: </b> {props.form.phoneNo}
+            <b>Phone Number: </b> {props.form.phone_no}
           </p>
           <p>
-            <b>Living Situation: </b> {props.form.livingSituation}
+            <b>Living Situation: </b> {props.form.living_situation}
           </p>
           <p>
-            <b>Previous Pet Experience: </b> {props.form.previousExperience}
+            <b>Previous Pet Experience: </b> {props.form.previous_experience}
           </p>
           <p>
-            <b>Having Other Pets? </b> {props.form.familyComposition}
+            <b>Having Other Pets? </b> {props.form.family_composition}
           </p>
-          <p>{formatTimeAgo(props.form.updatedAt)}</p>
+          <p>{formatTimeAgo(props.form.updated_at)}</p>
         </div>
         <div className="app-rej-btn">
           <button onClick={handleReject} disabled={isDeleting || isApproving}>
@@ -176,18 +177,18 @@ const FormCard = (props) => {
                 <b>Email: </b> {props.form.email}
               </p>
               <p>
-                <b>Phone Number: </b> {props.form.phoneNo}
+                <b>Phone Number: </b> {props.form.phone_no}
               </p>
               <p>
-                <b>Living Situation: </b> {props.form.livingSituation}
+                <b>Living Situation: </b> {props.form.living_situation}
               </p>
               <p>
-                <b>Previous Pet Experience: </b> {props.form.previousExperience}
+                <b>Previous Pet Experience: </b> {props.form.previous_experience}
               </p>
               <p>
-                <b>Having Other Pets? </b> {props.form.familyComposition}
+                <b>Having Other Pets? </b> {props.form.family_composition}
               </p>
-              <p>{formatTimeAgo(props.form.updatedAt)}</p>
+              <p>{formatTimeAgo(props.form.updated_at)}</p>
             </div>
             <button onClick={() => setShowDetailsPopup(false)} className="close-btn">
               Close <i className="fa fa-times"></i>

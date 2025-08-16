@@ -86,6 +86,7 @@ const PostPetSection = () => {
         body: formData,
       });
 
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }

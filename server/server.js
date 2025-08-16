@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const db = require('../server/config/db.js'); // PostgreSQL setup
+const connectCloudinary = require('../server/config/cloudinary.js')
 
 const petRouter = require('./Routes/PetRoute');
 const AdoptFormRoute = require('./Routes/AdoptFormRoute');
@@ -21,6 +22,7 @@ app.use('/form', AdoptFormRoute);
 app.use('/admin', AdminRoute);
 
 // Start server after confirming PostgreSQL connection
+ connectCloudinary()
 db.connect()
   .then(obj => {
     obj.done(); // release the connection

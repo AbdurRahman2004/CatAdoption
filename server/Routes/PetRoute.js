@@ -1,20 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
-const path = require('path');
+const upload = require('../middleware/multer');
 const { postPetRequest, approveRequest, deletePost, allPets, updatePet } = require('../Controller/PetController');
 
-// Set up multer storage for image uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, '../images'));
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-  }
-});
 
-const upload = multer({ storage: storage });
+
 
 // Routes for all pet requests
 router.get('/requests', (req, res) => allPets('Pending', req, res));
