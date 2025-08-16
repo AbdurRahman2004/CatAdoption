@@ -8,10 +8,11 @@ const AdoptingRequests = () => {
   const [petDetailsPopup, setPetDetailsPopup] = useState(false); 
   const [selectedPet, setSelectedPet] = useState(null); 
   const [selectedPetId, setSelectedPetId] = useState(''); 
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const fetchForms = async () => {
     try {
-      const response = await fetch('http://localhost:4000/form/getForms');
+      const response = await fetch(`${apiUrl}form/getForms`);
       console.log('Raw response:', response);
       const data = await response.json();
       console.log('Fetched forms:', data);
@@ -25,7 +26,7 @@ const AdoptingRequests = () => {
 
   const fetchPets = async () => {
     try {
-      const response = await fetch('http://localhost:4000/pets/approvedPets');
+      const response = await fetch(`${apiUrl}pets/approvedPets`);
       if (!response.ok) {
         throw new Error('An error occurred');
       }

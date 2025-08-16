@@ -7,11 +7,13 @@ const AdminLogin = () => {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [usersData, setUsersData] = useState([]);
+  const apiUrl = process.env.REACT_APP_API_URL;
+
 
   useEffect(() => {
     const fetchUsersData = async () => {
       try {
-        const response = await fetch('http://localhost:4000/admin/credentials');
+        const response = await fetch(`${apiUrl}admin/credentials`);
         if (!response.ok) {
           throw new Error('Failed to fetch');
         }

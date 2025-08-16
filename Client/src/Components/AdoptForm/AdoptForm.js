@@ -11,6 +11,7 @@ function AdoptForm(props) {
   const [ErrPopup, setErrPopup] = useState(false);
   const [SuccPopup, setSuccPopup] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const isEmailValid = (email) => {
     const emailPattern = /^[a-zA-Z0-9._-]+@gmail\.com$/;
@@ -41,7 +42,7 @@ function AdoptForm(props) {
 
       setIsSubmitting(true)
 
-      const response = await fetch('http://localhost:4000/form/save', {
+      const response = await fetch(`${apiUrl}form/save`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

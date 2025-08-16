@@ -9,8 +9,8 @@ const PetsViewer = (props) => {
     setShowPopup(!showPopup);
   };
 
-  const formatTimeAgo = (updatedAt) => {
-    const date = new Date(updatedAt);
+  const formatTimeAgo = (updated_at) => {
+    const date = new Date(updated_at);
     
     // Check if the date is valid
     if (isNaN(date.getTime())) {
@@ -30,7 +30,7 @@ const PetsViewer = (props) => {
         <p><b>Type:</b> {props.pet.type}</p>
         <p><b>Age:</b> {props.pet.age}</p>
         <p><b>Location:</b> {props.pet.area}</p>
-        <p>{formatTimeAgo(props.pet.updatedAt)}</p>
+        <p>{formatTimeAgo(props.pet.updated_at)}</p>
       </div>
       <div className='show-interest-btn'>
         <button onClick={togglePopup}>Show Interest <i className="fa fa-paw"></i></button>

@@ -11,6 +11,8 @@ const PetCards = (props) => {
   const [isApproving, setIsApproving] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [updatedPet, setUpdatedPet] = useState({ ...props.pet });
+  const apiUrl = process.env.REACT_APP_API_URL;
+;
 
   const truncateText = (text, maxLength) => {
     if (!text) return '';
@@ -30,7 +32,7 @@ const PetCards = (props) => {
     setIsApproving(true);
     try {
       console.log(props.pet.id);
-      const response = await fetch(`http://localhost:4000/pets/approving/${props.pet.id}`, {
+      const response = await fetch(`${apiUrl}pets/approving/${props.pet.id}`, {
         method: 'PUT',
         body: JSON.stringify({ status: "Approved" }),
         headers: { 'Content-Type': 'application/json' }
@@ -52,7 +54,7 @@ const PetCards = (props) => {
   const deleteFormsAdoptedPet = async () => {
     setIsDeleting(true);
     try {
-      const deleteResponses = await fetch(`http://localhost:4000/form/delete/many/${props.pet.id}`, {
+      const deleteResponses = await fetch(`${apiUrl}form/delete/many/${props.pet.id}`, {
         method: 'DELETE'
       });
       if (!deleteResponses.ok) throw new Error('Failed to delete forms');
@@ -65,7 +67,7 @@ const PetCards = (props) => {
 
   const handleReject = async () => {
     try {
-      const response = await fetch(`http://localhost:4000/pets/delete/${props.pet.id}`, {
+      const response = await fetch(`${apiUrl}pets/delete/${props.pet.id}`, {
         method: 'DELETE'
       });
       if (!response.ok) {
@@ -94,7 +96,7 @@ const PetCards = (props) => {
     e.preventDefault();
     setIsUpdating(true);
     try {
-      const response = await fetch(`http://localhost:4000/pets/update/${props.pet.id}`, {
+      const response = await fetch(`${apiUrl}pets/update/${props.pet.id}`, {
         method: 'PUT',
         body: JSON.stringify(updatedPet),
         headers: { 'Content-Type': 'application/json' }

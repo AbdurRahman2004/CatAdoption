@@ -16,6 +16,8 @@ const PostPetSection = () => {
   const [picture, setPicture] = useState(null);
   const [fileName, setFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false); 
+  const apiUrl = process.env.REACT_APP_API_URL;
+;
 
   useEffect(() => {
     if (!isSubmitting) {
@@ -81,7 +83,7 @@ const PostPetSection = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/pets/services", {
+      const response = await fetch(`${apiUrl}pets/services`, {
         method: "POST",
         body: formData,
       });

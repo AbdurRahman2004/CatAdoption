@@ -6,6 +6,7 @@ const AdoptedCards = (props) => {
   const [showApproved, setShowApproved] = useState(false);
   const [showDeletedSuccess, setshowDeletedSuccess] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   // Ensure props.pet exists before using it
   const pet = props.pet || {};
@@ -18,7 +19,7 @@ const AdoptedCards = (props) => {
   const handleReject = async () => {
     setIsDeleting(true);
     try {
-      const response = await fetch(`http://localhost:4000/pets/delete/${pet.id}`, {
+      const response = await fetch(`${apiUrl}pets/delete/${pet.id}`, {
         method: 'DELETE',
       });
 

@@ -4,10 +4,12 @@ import AdoptedCards from './AdoptedCards';
 const AdoptedHistory = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const apiUrl = process.env.REACT_APP_API_URL;
+  
 
   const fetchAdoptedPets = async () => {
     try {
-      const response = await fetch('http://localhost:4000/pets/adoptedPets');
+      const response = await fetch(`${apiUrl}pets/adoptedPets`);
       if (!response.ok) {
         throw new Error('An error occurred while fetching adopted pets');
       }
