@@ -7,7 +7,7 @@ const Footer = (props) => {
     <footer className="footer">
       <div>
         <Link className="logo-container" to="/">
-          <img className="navbar-logo" src={logo} alt="PawFinds Logo" />
+          <img className="navbar-logo" src={logo} alt="pawpals Logo" />
           <p>{props.title}</p>
         </Link>
       </div>
