@@ -13,7 +13,7 @@ const AdminRoute = require('./Routes/AdminRoute');
 const app = express();
 
 app.use(cors({
-  origin: ['https://pawpals-abdur.vercel.app/'],
+  origin: ['https://pawpals-abdur.vercel.app', 'http://localhost:5173'],
   credentials: true
 }));
 app.use(express.json());
