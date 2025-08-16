@@ -12,8 +12,10 @@ const AdminRoute = require('./Routes/AdminRoute');
 
 const app = express();
 
-app.use(cors());
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(cors({
+  origin: ['https://pawpals-abdur.vercel.app/'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -21,13 +23,15 @@ app.use('/pets', petRouter)
 app.use('/form', AdoptFormRoute);
 app.use('/admin', AdminRoute);
 
+app.get('/healthz', (req, res) => res.send('ok'));
+
 // Start server after confirming PostgreSQL connection
  connectCloudinary()
-db.connect()
+  db.connect()
   .then(obj => {
     obj.done(); // release the connection
     console.log('Connected to PostgreSQL');
-    const PORT = 4000;
+    const PORT =  process.env.PORT || 4000;;
     app.listen(PORT, () => {
       console.log(`Listening on port ${PORT}`);
     });
